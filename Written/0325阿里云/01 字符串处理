@@ -1,0 +1,18 @@
+小红准备在个网站注册一批账号和密码。
+已知当小红进行注册时,该网站会给出以下提示:
+1.用户名为6~12的字符串,且必须全部由英文字母(大小写均可)组成。
+2.用户名必须没有被注册过。
+小红想知道,自己每一次操作会得到什么样的返回?
+
+输入
+4
+abcdef
+abc
+abcdef
+abcd2f
+输出
+registration complete
+illegal length
+acount existed
+illegal charactor
+

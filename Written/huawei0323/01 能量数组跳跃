@@ -1,0 +1,56 @@
+给一个能量数组[2,1,5,6,2,3]和整数k，问能够跳到数组最后一个位置的最小次数，不能返回-1 90% LC45变种
+
+一开始读错题了，我以为k是说每一跳最多跨k个位置，其实题意是总跳数不能超过k  
+我想到的就是青蛙跳，直接用DP做 O(n^2) TLE
+
+正解是贪心，从前往后在可跳范围内选择跳的最远的位置 [2 3 0 1 4] 2可以跳到3或0，如果跳3可以到达4，跳0寄，所以选择跳3
+实现时，对每个元素维护可达的右边界，遇到右边界跳数加一。每到一个边界必然是一次新的起跳
+
+#include <iostream>
+#include <vector>
+#include <climits>
+using namespace std;
+
+int jump(vector<int>& nums, int k) {
+    int n = nums.size();
+    vector<int> dp(n, 0);
+    for (int i = 1; i < n; ++i) {
+        int cnt = INT_MAX;
+        for (int j = 0; j < i; ++j) {
+            if (nums[j] >= i - j)
+                cnt = min(cnt, dp[j]);
+        }
+        if (cnt == INT_MAX)
+            return -1;
+        dp[i] = 1 + cnt;
+    }
+    return dp[n - 1] > k ? -1 : dp[n - 1];
+}
+
+int jumpGreedy(vector<int>& nums, int k) {
+    int ans = 0;
+    int maxPos = 0, end = 0;
+    for (int i = 0; i < nums.size() - 1; ++i) {
+        maxPos = max(maxPos, i + nums[i]);  // 从i或之前起跳能跳到的最远位置
+        if (i == end) {  // 遇到了边界
+            if (end == maxPos)
+                return -1;
+            ++ans;
+            end = maxPos;
+        }
+    }
+    return ans > k ? -1 : ans;
+}
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+    vector<int> nums;
+    int tmp;
+    for (int i = 0; i < n; ++i) {
+        cin >> tmp;
+        nums.push_back(tmp);
+    }
+    cout << jump(nums, k) << endl;
+    return 0;
+}

@@ -1,0 +1,77 @@
+每个骰子有4种变化：前转、后转、左转、右转，问A是否能通过4种操作变为B，输出最小操作次数。
+傻逼BFS最短路但是不能完全过。后来发现不会vector<int>转string，我是这么写的：
+    vector<int> a{1,2,3};
+    string s;
+    s.assign(a.begin(), a.end());  这种只有vector<char>才可以
+
+    所以就挂了
+    应该读入时候就转
+
+
+    下面这段代码也不对，判断-1时：如果当前节点的4个后续都已经标记。这样不对，因为答案可能在当前节点同一层的后续节点，这样就没有遍历到. 这与啥时候标记没关系 -1的判断通过层数进行吧  if (ans > 50)即可
+    int main(int argc, char *argv[]) {
+    freopen("D:\\FILE\\mycode\\cpp_bishi\\data.in", "r", stdin);
+    freopen("D:\\FILE\\mycode\\cpp_bishi\\data.out", "w", stdout);
+
+    int T;
+    scanf("%d", &T);
+
+    int tmp;
+    string A, B;
+    while (T--) {
+        A.clear(); B.clear();
+        for (int i = 0; i < 6; ++i) {
+            cin >> tmp;
+            A += to_string(tmp);
+        }
+        for (int i = 0; i < 6; ++i) {
+            cin >> tmp;
+            B += to_string(tmp);
+        }
+        int ans = 0;
+        queue<string> q;
+        q.push(A);
+        unordered_set<string> vis;
+        vis.insert(A);
+        bool flag = false;
+        while (!q.empty()) {
+            int size = q.size();
+            while (size--) {
+                string cur = q.front(); q.pop();
+                if (cur == B) {
+                    flag = true;
+                    break;
+                }
+                string back = backward(cur), forw = forward(cur), l = left(cur), r = right(cur);
+                if (vis.find(back) != vis.end() && vis.find(forw) != vis.end() &&
+                        vis.find(l) != vis.end() && vis.find(r) != vis.end()) {
+                        ans = -1;
+                        flag = true;
+                        break;
+                }
+                if (vis.find(back) == vis.end()) {
+                    q.push(back);
+                    vis.insert(back);
+                }
+                if (vis.find(forw) == vis.end()) {
+                    q.push(forw);
+                    vis.insert(forw);
+                }
+                if (vis.find(l) == vis.end()) {
+                    q.push(l);
+                    vis.insert(l);
+                }  if (vis.find(r) == vis.end()) {
+                    q.push(r);
+                    vis.insert(r);
+                }
+            }
+            if (flag) {
+                break;
+            }
+            ++ans;
+        }
+        cout << ans << endl;
+    }
+
+    return 0;
+}

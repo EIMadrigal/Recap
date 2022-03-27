@@ -2,7 +2,7 @@
 已知当小红进行注册时,该网站会给出以下提示:
 1.用户名为6~12的字符串,且必须全部由英文字母(大小写均可)组成。
 2.用户名必须没有被注册过。
-小红想知道,自己每一次操作会得到什么样的返回?
+小红想知道,自己每一次操作会得到什么样的返回? 83% 输入可能有空格，不能用cin，要用getline
 
 输入
 4
@@ -16,3 +16,42 @@ illegal length
 acount existed
 illegal charactor
 
+#include <iostream>
+#include <string>
+#include <unordered_set>
+using namespace std;
+
+bool check(string& s) {
+    for (char c : s) {
+        if (!isalpha(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    cin.ignore();
+    unordered_set<string> s;
+    string tmp;
+    while (t--) {
+        getline(cin, tmp);
+        if (tmp.length() < 6 || tmp.length() > 12) {
+            cout << "illegal length" << endl;
+        }
+        else if (!check(tmp)) {
+            cout << "illegal charactor" << endl;
+        }
+        else if (s.find(tmp) != s.end()) {
+            cout << "acount existed" << endl;
+        }
+        else {
+            cout << "registration complete" << endl;
+            s.insert(tmp);
+        }
+    }    
+
+    return 0;
+}

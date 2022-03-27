@@ -1,0 +1,59 @@
+老师给了他五个数字，他每次操作可以选择其中的四个数字减一，减一之后的数字不能小于零因为幼儿园的牛牛还没有接触过负数。
+现在牛牛想知道,白己最多可以进行多少次这样的操作?
+
+我做法：从大到小排序，每次将前4大的数减到最小，再排序直到第四大数为0，[10,9,8,7,6]应该输出10，但是贪心输出8
+后来就纯暴力，排序后每次先减到和min相同，然后减1再排序直到结束 40%
+
+笔试时候就强烈感觉到这题见过，死活想不出来，LC2141二分变种
+
+枚举中点x，check是否满足条件：每次操作选4个数减一等价于全部数减一再选一个数加一，所以x次操作等价于所有数减x，再选一些数总共加够x看是否所有数都能加到0
+比如x=11, [-1,-2,-3,-4,-5],加到0需要15不行；x=10, [0,-1,-2,-3,-4], 加到0需要10刚好
+
+输入
+2
+5 4 3 2 1
+1 1 1 10000 1
+输出
+3
+1
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+bool check(vector<int>& nums, int x) {
+    int cnt = 0;
+    for (int i = 0; i < 5; ++i) {
+        if (nums[i] - x < 0) {
+            cnt += x - nums[i];
+        }
+    }
+    return cnt <= x;
+}
+
+int main() {
+    int t, tmp;
+    cin >> t;
+    vector<int> nums(5);
+    while (t--) {
+        int r = 0;
+        for (int i = 0; i < 5; ++i) {
+            cin >> tmp;
+            nums[i] = tmp;
+            r += tmp;
+        }
+        int l = 0;
+        while (l < r) {  // 最后一个小于等于target的数
+            int m = l + (r - l) / 2;
+            if (check(nums, m)) {
+                l = m + 1;
+            }
+            else {
+                r = m;
+            }
+        }
+        cout << l - 1 << endl;
+    }
+
+    return 0;
+}

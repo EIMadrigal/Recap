@@ -1,0 +1,82 @@
+1. [送文件问题](https://blog.nowcoder.net/n/705b29af83034150830e3c0e9a28e51f)  
+题意说人话就是：给定线段$A_1A_2$和$B_1B_2$，希望从$A_1A_2$和$B_1B_2$上分别找一个点A和B，使得$B_1B+BA<=A_1A$。  
+首先三角形$B_1BA$三条边满足$B_1A<b_1b+ab$，因此快递员必然走直线$ab_1$，即需要$ab_1<=aa_1$，即$ab_1+aa_2<=aa_1+aa_2=a_1a_2$，又在三角形$b_1aa_2$中，$ab_1+aa_2>B_1A_2$，因此快递员必然选择走直线$B_1A_2$，也就是说如果$B_1A_2$的距离小于等于$A_1A_2$的距离就能满足。
+
+```python
+n = int(input())
+
+for _ in range(n):
+    x1, y1, x2, y2, x3, y3, x4, y4 = map(int, input().split())
+    alice = (x3 - x4) ** 2 + (y3 - y4) ** 2
+    bob = (x1 - x4) ** 2 + (y1 - y4) ** 2
+    if bob <= alice:
+        print("Yes")
+    else:
+        print("No")
+```
+2. [及格问题](https://blog.nowcoder.net/n/62d4211f496e4939a153536e8e89a3ef)  
+我理解的题意（误）是：共有$(n+3)*20$道题，只要做对$(n+3)*12$题以上就可以及格，然后如下代码连样例都过不了：
+```python
+from scipy.special import comb
+
+ans = 0
+for i in range(72, 121):
+    ans += comb(120, i, exact=True) % 202220222022
+    ans %= 202220222022
+print(ans)
+```
+
+DP的话：如果将dp(i,j)定义为前i门课至少做对j题的组合数，最终的答案就是dp(n+3,12(n+3))，但这样后面的状态转移可能会比较复杂。
+
+所以我们将dp(i,j)定义为前i门课刚好做对j题的组合数，答案就是dp(n+3,12(n+3))+dp(n+3,12(n+3)+1)+...+dp(n+3,13(n+3))+...+dp(n+3,20(n+3))  
+卧槽，好像弄错题意了...  
+dp(1,i)=1，也就是说每一门课里做对哪些题没有区别，1门课做对1题不是20种方案，而是1种，所以排列组合也就不对了。唉，最怕读错题啊！！  
+状态转移方程dp(i,j)=dp(i-1,0)+dp(i-1,1)+...+dp(i-1,j)，就是说前i门课刚好做对j题的方案数取决于前i-1门课，如果前i-1门课做对0题，那么第i门就必须要做对j题；如果前i-1门课做对1题，那么第i门就必须要做对j-1题...  
+这里要注意：因为一门课最多只能做对20题，所以前i-1课做对的题数要满足k >= j - 20
+```python
+n = int(input())
+mod = 202220222022
+
+n += 3
+dp = [[0 for _ in range(1 + 20 * n)] for _ in range(n + 1)]
+for i in range(21):
+    dp[1][i] = 1
+
+for i in range(2, n + 1):
+    for j in range(i * 20 + 1):
+        # k表示前i-1课做对的题数, 第i课做对的题数<=20, 即前i-1课做对的题数k >= j - 20
+        for k in range(j + 1):
+            if k >= j - 20:
+                dp[i][j] += dp[i - 1][k]
+                dp[i][j] %= mod
+
+ans = 0
+
+# 错误示范
+# for i in range(12, 21):
+    # ans += dp[n][i * n] % mod
+    # ans %= mod
+
+for i in range(12 * n, 20 * n + 1):
+    ans += dp[n][i] % mod
+    ans %= mod
+print(ans)
+```
+3. [牛牛施肥](https://blog.csdn.net/Derrick12/article/details/119712588)  
+这种题要注意循环不变性，就是说每一趟是否要包含第一行和最后一行，采用左闭右开，这样每一趟需要的肥料都是固定的，比较好实现而不至于淹没在细节里
+```python
+class Solution:
+    def FarmerNN(self, n, m):
+        k, b = m // (n - 1), m % (n - 1)
+        if k % 2 == 0:
+            ans = [k] * n
+            ans[0], ans[-1] = k // 2, k // 2
+            for i in range(b):
+                ans[i] += 1
+        else:
+            ans = [k] * n
+            ans[0], ans[-1] = k // 2 + 1, k // 2
+            for i in range(n - 1, n - 1 - b, -1):
+                ans[i] += 1
+        return ans
+```

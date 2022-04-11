@@ -1,2 +1,4 @@
 N = 10^5
 给一个vector<int>，要求把该数组分为3段，选择两个不相邻的分裂点i j使得 nums[i] + nums[j]最小。
+
+排序找2个index不相邻的最小值，O(nlgn)

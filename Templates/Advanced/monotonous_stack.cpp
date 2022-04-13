@@ -15,25 +15,26 @@ vector<pair<int, int>> monotonousStack(vector<int>& nums) {
         s.push(i);
     }
     while (!s.empty()) {
-        int popIdx = s.top(); s.pop();
-        ans[popIdx].first = s.empty() ? -1 : s.top();
-        ans[popIdx].second = -1;
+        int idx = s.top(); s.pop();
+        ans[idx].first = s.empty() ? -1 : s.top();
+        ans[idx].second = -1;
     }
     return ans;
 } 
 
-// 有重复值, 主要为了处理左侧, 右侧其实可以沿用上面代码
-vector<vector<int>> monotonous_stack(vector<int>& nums) {
-    int n = nums.size();
-    vector<vector<int>> ans(n, vector<int>(2, 0));  // return index
+// 数组中有重复值, 右侧可以沿用上面代码, 左侧不可
+vector<pair<int, int>> monotonousStackRepeat(vector<int>& nums) {
+    vector<pair<int, int>> ans(nums.size());  // return index
     stack<vector<int>> s;  // store index, same number's idx stores together 
-    for (int i = 0; i < n; ++i) {
+    
+    for (int i = 0; i < nums.size(); ++i) {
+        // 求smaller. 若需greater, 改为 nums[i] > nums[s.top()]
         while (!s.empty() && nums[i] < nums[s.top()[0]]) {
             vector<int> pop_idx = s.top(); s.pop();
-            int left_less_idx = s.empty() ? -1 : s.top()[s.top().size() - 1];
+            int leftSmallIdx = s.empty() ? -1 : s.top()[s.top().size() - 1];
             for (int idx : pop_idx) {
-                ans[idx][0] = left_less_idx;
-                ans[idx][1] = i;
+                ans[idx].first = leftSmallIdx;
+                ans[idx].second = i;
             }
         }
         if (!s.empty() && nums[i] == nums[s.top()[0]]) {
@@ -44,11 +45,11 @@ vector<vector<int>> monotonous_stack(vector<int>& nums) {
         }
     }
     while (!s.empty()) {
-        vector<int> pop_idx = s.top(); s.pop();
-        int left_less_idx = s.empty() ? -1 : s.top()[s.top().size() - 1];
-        for (int idx : pop_idx) {
-            ans[idx][0] = left_less_idx;
-            ans[idx][1] = -1;
+        vector<int> idx = s.top(); s.pop();
+        int leftSmallIdx = s.empty() ? -1 : s.top()[s.top().size() - 1];
+        for (int i : idx) {
+            ans[i].first = leftSmallIdx;
+            ans[i].second = -1;
         }
     }
     return ans;

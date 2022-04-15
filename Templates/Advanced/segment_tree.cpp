@@ -12,7 +12,7 @@ public:
                 right = nullptr;
             }
         }
-        int start, end, val;
+        int start, end, val;  // val can be sum, min, max...
         TreeNode* left, *right;
     };
     
@@ -47,9 +47,9 @@ public:
             return root->val;
         }
         int m = root->start + (root->end - root->start) / 2;
-        if (r <= m) {
+        if (r <= m) {  // 查询范围完全落在左子树
             return query(root->left, l, r);
-        } else if (l > m) {
+        } else if (l > m) {  // 查询范围完全落在右子树
             return query(root->right, l, r);
         } else {
             return query(root->left, l, m) + query(root->right, m + 1, r);

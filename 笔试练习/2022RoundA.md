@@ -85,7 +85,70 @@ int main() {
 给一个由?01组成的字符串, 将所有?填充为0/1使得字符串中没有长度大于5的回文子串, 是否存在填充方案  
 暴力dfs的时间复杂度是O(N^3*2^N)
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
+bool palindrome(const string& s) {
+    for (int i = 0; i < s.length() / 2; ++i) {
+        if (s[i] != s[s.length() - i - 1]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool check(string& s) {
+    for (char c : s) {
+        if (c == '?') return false;
+    }
+    for (int i = 0; i < s.length(); ++i) {
+        for (int j = i + 4; j < s.length(); ++j) {
+            if (palindrome(s.substr(i, j - i + 1))) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool dfs(string& s, int i) {
+    if (i == s.length()) {
+        if (check(s)) return true;
+        return false;
+    }
+    
+    if (s[i] != '?') {
+        return dfs(s, i + 1);
+    }
+    s[i] = '1';
+    if (dfs(s, i + 1)) {
+        return true;
+    }
+    else {
+        s[i] = '0';
+        if (dfs(s, i + 1))
+            return true;
+    }
+    s[i] = '?';
+    return false;
+}
+
+int main() {
+    int t, n;
+    cin >> t;
+    string s;
+    for (int i = 1; i <= t; ++i) {
+        cin >> n >> s;
+        printf("Case #%d: ", i);
+        if (dfs(s, 0)) {
+            printf("POSSIBLE\n");
+        }
+        else {
+            printf("IMPOSSIBLE\n");
+        }
+    }
+    return 0;
+}
 ```
 
 ## Interesting Integers

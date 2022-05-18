@@ -22,3 +22,32 @@ int strSplit(string s) {
     return res;
 }
 ```
+
+```cpp
+// https://www.bilibili.com/video/BV1qF411B7B8
+int numBlock(vector<int>& w, int x, int k) {
+    sort(w.begin(), w.end());
+    int splits = 1;
+    vector<int> needs;
+    for (int i = 1; i < w.size(); ++i) {
+        if (w[i] - w[i - 1] > x) {
+            ++splits;
+            needs.push_back(w[i] - w[i - 1]);
+        }
+    }
+    if (splits == 1 || x == 0 || k == 0) {
+        return splits;
+    }
+    sort(needs.begin(), needs.end());
+    for (int i = 0; i < needs.size(); ++i) {
+        int need = (needs[i] - 1) / x;
+        if (k >= need) {
+            splits--;
+            k -= need;
+        } else {
+            break;
+        }
+    }
+    return splits;
+}
+```

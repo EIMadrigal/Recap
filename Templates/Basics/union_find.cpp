@@ -2,9 +2,10 @@ class UnionFind {
 private:
     vector<int> parents_;
     vector<int> ranks_;
+    int setsCnt;
 
 public:
-    UnionFind(int n) {
+    UnionFind(int n) : setsCnt(n) {
         // 是否等于n取决于index从0开始还是从1开始
         for(int i = 0; i <= n; ++i) {
             parents_.emplace_back(i);
@@ -40,6 +41,11 @@ public:
             parents_[rootu] = rootv;
             ++ranks_[rootv];
         }
+        setsCnt--;
         return true;
+    }
+
+    int getSetCnt() {
+        return setsCnt;
     }
 };

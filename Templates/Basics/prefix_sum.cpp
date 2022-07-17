@@ -1,15 +1,17 @@
 // 一维
-for (int i = 0; i < n; ++i) {
-  if (i == 0) preSum[i] = nums[i];
-  else preSum[i] = preSum[i - 1] + nums[i];
+// [l,r]区间和：preSum[r + 1] - preSum[l]
+vector<int> preSum(n + 1, 0);
+for (int i = 1; i <= n; ++i) {
+    preSum[i] = preSum[i - 1] + nums[i - 1];
 }
 
+
 // 二维
-for (int i = 0; i < rows; ++i) {
-  for (int j = 0; j < cols; ++j) {
-    if (i == 0 && j == 0) preSum[i][j] = nums[i][j];
-    else if (i == 0) preSum[i][j] = preSum[i][j - 1] + nums[i][j];
-    else if (j == 0) preSum[i][j] = preSum[i - 1][j] + nums[i][j];
-    else preSum[i][j] = preSum[i - 1][j] + preSum[i][j - 1] - preSum[i - 1][j - 1] + nums[i][j];
-  }
+// (x1,y1) -> (x2,y2)区间和：
+// preSum[x2+1][y2+1] - preSum[x2][y2+1] - preSum[x2+1][y2] + preSum[x2][y2]
+vector<int> preSum(m + 1, vector<int>(n + 1, 0));
+for (int i = 1; i <= m; ++i) {
+    for (int j = 1; j <= n; ++j) {
+        preSum[i][j] = preSum[i - 1][j] + preSum[i][j - 1] - preSum[i - 1][j - 1] + nums[i - 1][j - 1];
+    }
 }

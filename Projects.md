@@ -9,11 +9,17 @@
 3. 项目的测试过程  
 根据课程提供的测试用例；将Linux Kernel中的`TCPSocket`替换为自己实现的`CS144TCPSocket`，和真正的webserver通信；遇到Bug时通过构造一些小case，打断点观察相应变量的变化，或者通过wireshark抓包
 5. 项目整体介绍，包括目的、功能、实用价值  
-这个项目是Stanford网络课的lab，实现了Intenet的一些重要组件：IP路由器、IP/Ethernet网络接口(适配器)、TCP协议，形成了一个相对完整的网络协议栈，最终可以替换掉Linux kernel提供的TCPSocket，向web server发送请求并接收响应，也可以双向传输文件。
-7. 可靠传输怎么实现的
-8. 重传怎么实现
-9. 遇到的困难
-10. 有什么亮点
+这个项目是Stanford网络课的lab，实现了Intenet的一些重要组件：IP路由器、IP/Ethernet网络接口(适配器)、TCP协议，形成了一个相对完整的网络协议栈，最终可以替换掉Linux kernel提供的TCPSocket，向web server发送请求并接收响应，也可以双向传输文件，吞吐量可以达到1.6Gbit/s
+7. 可靠传输怎么实现的  
+checksum：  
+seq & ack：  
+流量控制：接收方的接收窗口recv_win是滑动的，发送方根据header中的ackno & window size确定是否继续发送segments  
+超时重传：自动重传请求(automatic repeat request)，直到收到接收方的ack
+
+9. 重传怎么实现  
+
+11. 遇到的困难
+12. 有什么亮点
 
 ## Map
 1. 地图具体怎么实现的？怎么解析XML的地理数据

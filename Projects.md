@@ -7,12 +7,13 @@
 因此，希望将buffer的对象的存储方式改为**基于内存所有权转移**，通过`move(string&)`将左值引用转为右值引用，进而调用移动构造函数`BufferList(string &&str)`，将`data`变为一个shared object，通过引用计数以及指针偏移控制访问，避免拷贝`data`，从而提升性能。另外，对于`pop_output/peek_output`，以前是用`for`循环真的从`deque`中pop字符，改为shared后直接移动指针偏移量即可，再次提高了性能。  
 移动构造函数的参数是右值引用即只接受右值，`move`是将左值强制转换为右值，让右值引用可以指向，等同于`static_cast<T&&>(lvalue)`
 3. 项目的测试过程  
-根据课程提供的测试用例；将Linux Kernel中的`TCPSocket`替换为自己实现的`CS144TCPSocket`，和真正的webserver通信；遇到Bug时通过构造一些小case，打断点观察相应变量的变化
-5. 项目整体介绍，包括目的、功能、实用价值
-6. 可靠传输怎么实现的
-7. 重传怎么实现
-8. 遇到的困难
-9. 有什么亮点
+根据课程提供的测试用例；将Linux Kernel中的`TCPSocket`替换为自己实现的`CS144TCPSocket`，和真正的webserver通信；遇到Bug时通过构造一些小case，打断点观察相应变量的变化，或者通过wireshark抓包
+5. 项目整体介绍，包括目的、功能、实用价值  
+这个项目是Stanford网络课的lab，实现了Intenet的一些重要组件：IP路由器、IP/Ethernet网络接口(适配器)、TCP协议，形成了一个相对完整的网络协议栈，最终可以替换掉Linux kernel提供的TCPSocket，向web server发送请求并接收响应，也可以双向传输文件。
+7. 可靠传输怎么实现的
+8. 重传怎么实现
+9. 遇到的困难
+10. 有什么亮点
 
 ## Map
 1. 地图具体怎么实现的？怎么解析XML的地理数据

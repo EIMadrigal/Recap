@@ -6,12 +6,13 @@
 其次，发现了ByteStream的write/pop_output/peek_output操作占据了大概80%的时间，ByteStream的容器是`deque<char>`，以`write`方法为例，入参是`string& data`，`write`时将`data`中的字符拷贝到`deque`中，存储方式是**基于内存拷贝的**，比较慢；  
 因此，希望将buffer的对象的存储方式改为**基于内存所有权转移**，通过`move(string&)`将左值引用转为右值引用，进而调用移动构造函数`BufferList(string &&str)`，将`data`变为一个shared object，通过引用计数以及指针偏移控制访问，避免拷贝`data`，从而提升性能。另外，对于`pop_output/peek_output`，以前是用`for`循环真的从`deque`中pop字符，改为shared后直接移动指针偏移量即可，再次提高了性能。  
 移动构造函数的参数是右值引用即只接受右值，`move`是将左值强制转换为右值，让右值引用可以指向，等同于`static_cast<T&&>(lvalue)`
-3. 项目的测试过程
-4. 项目整体介绍，包括目的、功能、实用价值
-5. 可靠传输怎么实现的
-6. 重传怎么实现
-7. 遇到的困难
-8. 有什么亮点
+3. 项目的测试过程  
+根据课程提供的测试用例；将Linux Kernel中的`TCPSocket`替换为自己实现的`CS144TCPSocket`，和真正的webserver通信；遇到Bug时通过构造一些小case，打断点观察相应变量的变化
+5. 项目整体介绍，包括目的、功能、实用价值
+6. 可靠传输怎么实现的
+7. 重传怎么实现
+8. 遇到的困难
+9. 有什么亮点
 
 ## Map
 1. 地图具体怎么实现的？怎么解析XML的地理数据

@@ -20,10 +20,10 @@ seq & ack：
 用queue记录所有已经发送但是还未被接收方ack的segment(outstanding segments)，如果超时则重传这些segment(从最早的开始)。**超时时间**(retransmission timeout, RTO)的设置不能太长或太短，构造sender时会设置RTO的初始值(1s)，通过实现一个定时器判断是否超过了RTO，如果接收窗口不为0，记录**连续重传次数**，RTO加倍(exponential backoff, 指数回退)，如果收到了接收方的ackno大于之前收到的ackno，重置RTO和重传次数。如果重传次数大于8次，发送空的RST包终止连接。
 
 11. 遇到的困难  
-
+完成了receiver和sender模块后，在做connection模块连接两者时，有几个test case总是过不了，用wireshark抓包发现一直在重传SYN包，可能是网络问题或者receiver的bug，分析了很久没有头绪，后来将所有模块全部替换仍然在重传，最后发现因为虚拟机环境virtualbox的问题，配置好VMware的环境就OK了，至今不知道什么问题，怀疑是virtualbox网络转发相关问题。
 
 13. 有什么亮点  
-利用已有的性能优化知识突破了吞吐量瓶颈。
+利用已有的性能优化知识突破了吞吐量瓶颈。实现了从传输层、网络层到数据链路层相对完整的协议栈，可以用来替换kernel提供的模块进行通信，也可以和实际的server进行通信。
 
 15. 
 

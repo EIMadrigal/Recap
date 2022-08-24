@@ -17,9 +17,12 @@ seq & ack：
 超时重传：自动重传请求(automatic repeat request)，直到收到接收方的ack
 
 9. 重传怎么实现  
+用queue记录所有已经发送但是还未被接收方ack的segment(outstanding segments)，如果超时则重传这些segment(从最早的开始)。**超时时间**(retransmission timeout, RTO)的设置不能太长或太短，构造sender时会设置RTO的初始值(1s)，通过实现一个定时器判断是否超过了RTO，如果接收窗口不为0，记录**连续重传次数**，RTO加倍(exponential backoff, 指数回退)，如果收到了接收方的ackno大于之前收到的ackno，重置RTO和重传次数。如果重传次数大于8次，发送空的RST包终止连接。
 
-11. 遇到的困难
-12. 有什么亮点
+11. 遇到的困难  
+
+
+13. 有什么亮点
 
 ## Map
 1. 地图具体怎么实现的？怎么解析XML的地理数据

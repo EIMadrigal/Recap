@@ -4,7 +4,7 @@
 项目的最低要求是100Mbit/s，虽然第一个版本可以达到1.1Gbit/s左右，但是官方说自己的吞吐量可以达到1.7Gbit/s，所以为了提升性能，要利用CSAPP中的性能优化相关知识挑战。  
 首先，profiling寻找性能瓶颈。修改编译参数，将-g改为-Og -pg，使得生成程序可以用gprof进行剖析；将对benchmark的分析结果重定向到文本，观察耗时操作；  
 其次，发现了ByteStream的write/pop_output/peek_output操作占据了大概80%的时间，ByteStream的容器是`deque<char>`，以`write`方法为例，入参是`string& data`，`write`时将`data`中的字符拷贝到`deque`中，存储方式是**基于内存拷贝的**，比较慢；  
-因此，希望将buffer的对象的存储方式改为**基于内存所有权转移**，通过`move(string&)`将左值引用转为右值引用，进而调用移动构造函数`BufferList(string &&str)`，将`data`变为一个shared object，`Buffer`里只存储指针和偏移量，通过引用计数以及指针偏移控制访问，避免拷贝`data`，从而提升性能。另外，对于`pop_output/peek_output`，以前是用`for`循环真的从`deque`中pop字符，改为shared后直接移动指针偏移量即可，再次提高了性能。  
+因此，希望将buffer的对象的存储方式改为**基于内存所有权转移**，通过`move(string&)`将左值引用转为右值引用，进而调用移动构造函数`BufferList(string &&str)`，将`data`变为一个shared object，`Buffer`里只存储指针和偏移量，可以有多个`Buffer`指向`data`，通过引用计数以及指针偏移控制访问，避免拷贝`data`，从而提升性能。另外，对于`pop_output/peek_output`，以前是用`for`循环真的从`deque`中pop字符，改为shared后直接移动指针偏移量即可，复杂度O(1)，再次提高了性能。  
 移动构造函数的参数是右值引用即只接受右值，`move`是将左值强制转换为右值，让右值引用可以指向，等同于`static_cast<T&&>(lvalue)`
 3. 项目的测试过程  
 根据课程提供的测试用例；将Linux Kernel中的`TCPSocket`替换为自己实现的`CS144TCPSocket`，和真正的webserver通信；遇到Bug时通过构造一些小case，打断点观察相应变量的变化，或者通过wireshark抓包
